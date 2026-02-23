@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Judul Manhwa Kamu</title>
+
+<style>
+:root{
+  --bg:#0f0f14;
+  --card:#1a1a22;
+  --accent:#ff2e63;
+  --text:#ffffff;
+}
+
+.light{
+  --bg:#f4f4f4;
+  --card:#ffffff;
+  --accent:#ff2e63;
+  --text:#111;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:0.3s;
+}
+
+header{
+  padding:15px;
+  background:var(--card);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+}
+
+button{
+  background:var(--accent);
+  border:none;
+  padding:8px 15px;
+  color:white;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.container{
+  max-width:800px;
+  margin:auto;
+  padding:20px;
+}
+
+.cover{
+  width:200px;
+  border-radius:12px;
+}
+
+.card{
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  margin-top:20px;
+}
+
+.chapter-list button{
+  display:block;
+  width:100%;
+  margin:5px 0;
+}
+
+.chapter img{
+  width:100%;
+  margin:10px 0;
+  border-radius:10px;
+}
+
+.nav-buttons{
+  display:flex;
+  justify-content:space-between;
+  margin-top:20px;
+}
+
+.comment-box textarea{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+}
+
+.comment{
+  background:var(--card);
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>Judul Manhwa Kamu</h2>
+  <div>
+    <button onclick="toggleMode()">Mode</button>
+    <button onclick="bookmark()">Bookmark</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- HOME -->
+  <div id="home">
+    <center>
+      <img src="cover.jpg" class="cover">
+      <p>Sinopsis manhwa kamu taruh di sini.</p>
+      <button onclick="showChapter(1)">Baca Sekarang</button>
+    </center>
+
+    <div class="card chapter-list">
+      <h3>Daftar Chapter</h3>
+      <button onclick="showChapter(1)">Chapter 1</button>
+      <button onclick="showChapter(2)">Chapter 2</button>
+    </div>
+  </div>
+
+  <!-- CHAPTER -->
+  <div id="chapter" style="display:none;">
+    <button onclick="goHome()">← Kembali</button>
+    <h3 id="chapterTitle"></h3>
+    <div class="chapter" id="chapterContent"></div>
+
+    <!-- NEXT PREV -->
+    <div class="nav-buttons">
+      <button onclick="prevChapter()">⬅ Prev</button>
+      <button onclick="nextChapter()">Next ➡</button>
+    </div>
+
+    <!-- KOMENTAR -->
+    <div class="card comment-box">
+      <h4>Komentar</h4>
+      <textarea id="commentInput" placeholder="Tulis komentar..."></textarea>
+      <button onclick="addComment()">Kirim</button>
+      <div id="comments"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let chapters = {
+  1: ["1.jpg","2.jpg","3.jpg"],
+  2: ["4.jpg","5.jpg"]
+};
+
+let currentChapter = 1;
+
+function showChapter(num){
+  currentChapter = num;
+  document.getElementById("home").style.display="none";
+  document.getElementById("chapter").style.display="block";
+  document.getElementById("chapterTitle").innerText="Chapter "+num;
+
+  let content="";
+  chapters[num].forEach(img=>{
+    content += `<img src="${img}">`;
+  });
+
+  document.getElementById("chapterContent").innerHTML=content;
+  localStorage.setItem("lastRead", num);
+}
+
+function nextChapter(){
+  if(chapters[currentChapter+1]){
+    showChapter(currentChapter+1);
+    window.scrollTo(0,0);
+  } else {
+    alert("Sudah chapter terakhir!");
+  }
+}
+
+function prevChapter(){
+  if(chapters[currentChapter-1]){
+    showChapter(currentChapter-1);
+    window.scrollTo(0,0);
+  } else {
+    alert("Ini chapter pertama!");
+  }
+}
+
+function goHome(){
+  document.getElementById("home").style.display="block";
+  document.getElementById("chapter").style.display="none";
+}
+
+function toggleMode(){
+  document.body.classList.toggle("light");
+}
+
+function bookmark(){
+  alert("Chapter "+currentChapter+" disimpan!");
+}
+
+function addComment(){
+  let input=document.getElementById("commentInput");
+  if(input.value.trim()=="") return;
+
+  let div=document.createElement("div");
+  div.className="comment";
+  div.innerText=input.value;
+
+  document.getElementById("comments").appendChild(div);
+  input.value="";
+}
+</script>
+
+</body>
+</html>
